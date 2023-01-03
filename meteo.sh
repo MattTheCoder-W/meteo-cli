@@ -10,7 +10,16 @@
 
 VERSION="0.0.1"
 
-cache="/home/$USER/.cache/meteo"
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+	cache="/home/$USER/.cache/meteo";
+	OS="linux";
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+	cache="/Users/$USER/.cache/meteo";
+	OS="mac";
+else
+	echo "[error] Your are running unsupported OS";
+	exit;
+fi
 
 # ==================
 # Prepare enviroment
@@ -77,8 +86,12 @@ fi
 
 # Display image
 
-source "`ueberzug library`"
-ImageLayer 0< <(
-ImageLayer::add [identifier]="example" [x]="0" [y]="0" [max_width]="$(tput cols)" [max_height]="$(tput lines)" [path]="$cache/weather.png"
-    read
-)
+if [[ "$OS" == "linux" ]]; then
+	source "`ueberzug library`"
+	ImageLayer 0< <(
+	ImageLayer::add [identifier]="example" [x]="0" [y]="0" [max_width]="$(tput cols)" [max_height]="$(tput lines)" [path]="$cache/weather.png"
+	    read
+	)
+else
+	open $cache/weather.png;
+fi
